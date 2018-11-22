@@ -54,11 +54,11 @@
       "progressUpdateIntervalMs": 500
     },
     {
-      "text": "%spark\nimport scala.collection.mutable.ListBuffer\nimport sqlContext.implicits._\nimport scala.io.Source\n\n\nvar RawTaxiData_ListBuffer \u003d new ListBuffer[java.lang.String]()\nval url \u003d \"https://s3.amazonaws.com/nyc-tlc/trip+data/yellow_tripdata_2018-01.csv\"\n\nval bufferedSource \u003d\nSource.fromURL(\"https://s3.amazonaws.com/nyc-tlc/trip+data/yellow_tripdata_2018-01.csv\")\n\n\nvar id \u003d 0\nfor (line \u003c- bufferedSource.getLines.take(10000).toList) {\n    //println(line.length())\n    \n    if (line.length() \u003e 0) {\n        val cols \u003d line.split(\",\")\n        RawTaxiData_ListBuffer +\u003d s\"${id},${cols(0)},${cols(1)},${cols(2)},${cols(3)},${cols(4)},${cols(5)},${cols(6)},${cols(7)},${cols(8)},${cols(9)},${cols(10)},${cols(11)},${cols(12)},${cols(13)},${cols(14)},${cols(15)},${cols(16)}\"\n        id \u003d id + 1\n    }\n}\nbufferedSource.close\n\n\n\ncase class Taxi(ID: String, VendorID: String, tpep_pickup_datetime: String, tpep_dropoff_datetime: String, passenger_count: String, trip_distance: String, RatecodeID: String, store_and_fwd_flag: String, PULocationID: String, DOLocationID: String, payment_type: String, fare_amount: String, extra: String, mta_tax: String, tip_amount: String, tolls_amount: String, improvement_surcharge: String, total_amount: String)\n\n\nvar stockDF \u003d RawTaxiData_ListBuffer.drop(1)\n\nval demoDS \u003d stockDF.map(line \u003d\u003e {\n    val fields \u003d line.replace(\"\\\"\",\"\").split(\",\")\n    Taxi(fields(0), fields(1), fields(2), fields(3), fields(4), fields(5), fields(6), fields(7), fields(8), fields(9), fields(10), fields(11), fields(12), fields(13), fields(14), fields(15), fields(16), fields(17))\n})\n\n\nval taxiData \u003d demoDS.toDF()\ntaxiData.show()\n\ntaxiData.registerTempTable(\"taxi_data\")",
+      "text": "%spark\nimport scala.collection.mutable.ListBuffer\nimport sqlContext.implicits._\nimport scala.io.Source\n\n\nvar RawTaxiData_ListBuffer \u003d new ListBuffer[java.lang.String]()\nval url \u003d \"https://s3.amazonaws.com/nyc-tlc/trip+data/yellow_tripdata_2018-01.csv\"\n\nval bufferedSource \u003d\nSource.fromURL(url)\n\n\nvar id \u003d 0\nfor (line \u003c- bufferedSource.getLines.take(10000).toList) {\n    //println(line.length())\n    \n    if (line.length() \u003e 0) {\n        val cols \u003d line.split(\",\")\n        RawTaxiData_ListBuffer +\u003d s\"${id},${cols(0)},${cols(1)},${cols(2)},${cols(3)},${cols(4)},${cols(5)},${cols(6)},${cols(7)},${cols(8)},${cols(9)},${cols(10)},${cols(11)},${cols(12)},${cols(13)},${cols(14)},${cols(15)},${cols(16)}\"\n        id \u003d id + 1\n    }\n}\nbufferedSource.close\n\ncase class Taxi(ID: String, VendorID: String, tpep_pickup_datetime: String, tpep_dropoff_datetime: String, passenger_count: String, trip_distance: String, RatecodeID: String, store_and_fwd_flag: String, PULocationID: String, DOLocationID: String, payment_type: String, fare_amount: String, extra: String, mta_tax: String, tip_amount: String, tolls_amount: String, improvement_surcharge: String, total_amount: String)\n\n\nvar stockDF \u003d RawTaxiData_ListBuffer.drop(1)\n\nval demoDS \u003d stockDF.map(line \u003d\u003e {\n    val fields \u003d line.replace(\"\\\"\",\"\").split(\",\")\n    Taxi(fields(0), fields(1), fields(2), fields(3), fields(4), fields(5), fields(6), fields(7), fields(8), fields(9), fields(10), fields(11), fields(12), fields(13), fields(14), fields(15), fields(16), fields(17))\n})\n\n\nval taxiData \u003d demoDS.toDF()\ntaxiData.show()\n\ntaxiData.registerTempTable(\"taxi_data\")",
       "user": "admin",
-      "dateUpdated": "2018-11-21 23:31:51.939",
+      "dateUpdated": "2018-11-21 23:41:32.209",
       "config": {
-        "tableHide": false,
+        "tableHide": true,
         "editorSetting": {
           "language": "scala",
           "editOnDblClick": false,
@@ -91,6 +91,167 @@
       "dateCreated": "2018-11-21 23:06:36.936",
       "dateStarted": "2018-11-21 23:31:51.978",
       "dateFinished": "2018-11-21 23:31:57.308",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark\nimport scala.collection.mutable.ListBuffer\nimport sqlContext.implicits._\nimport scala.io.Source\n\nvar RawZoneData_ListBuffer \u003d new ListBuffer[java.lang.String]()\nval url \u003d \"https://s3.amazonaws.com/nyc-tlc/misc/taxi+_zone_lookup.csv\"\n\nval bufferedSource \u003d Source.fromURL(url)\n\nfor (line \u003c- bufferedSource.getLines) {\n    if (line.length \u003e 0){\n        val cols \u003d line.split(\",\")\n        RawZoneData_ListBuffer +\u003d s\"${cols(0)},${cols(1)},${cols(2)},${cols(3)}\"\n        id \u003d id +1\n    }\n}\n\nbufferedSource.close()\n\ncase class Zone(LocationID: String, Borough: String, Zone: String, service_zone: String)\n\nvar rawDF \u003d RawZoneData_ListBuffer.drop(1)\n\nval zoneDS \u003d rawDF.map(line \u003d\u003e {\n    val fields \u003d line.replace(\"\\\"\",\"\").split(\",\")\n    Zone(fields(0), fields(1), fields(2), fields(3))\n})\n\nval zoneData \u003d zoneDS.toDF()\nzoneData.registerTempTable(\"zone_data\")\nzoneData.show()",
+      "user": "admin",
+      "dateUpdated": "2018-11-21 23:57:52.564",
+      "config": {
+        "colWidth": 6.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/scala",
+        "tableHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "import scala.collection.mutable.ListBuffer\nimport sqlContext.implicits._\nimport scala.io.Source\nRawZoneData_ListBuffer: scala.collection.mutable.ListBuffer[String] \u003d ListBuffer()\nurl: String \u003d https://s3.amazonaws.com/nyc-tlc/misc/taxi+_zone_lookup.csv\nbufferedSource: scala.io.BufferedSource \u003d non-empty iterator\ndefined class Zone\nrawDF: scala.collection.mutable.ListBuffer[String] \u003d ListBuffer(1,\"EWR\",\"Newark Airport\",\"EWR\", 2,\"Queens\",\"Jamaica Bay\",\"Boro Zone\", 3,\"Bronx\",\"Allerton/Pelham Gardens\",\"Boro Zone\", 4,\"Manhattan\",\"Alphabet City\",\"Yellow Zone\", 5,\"Staten Island\",\"Arden Heights\",\"Boro Zone\", 6,\"Staten Island\",\"Arrochar/Fort Wadsworth\",\"Boro Zone\", 7,\"Queens\",\"Astoria\",\"Boro Zone\", 8,\"Queens\",\"Astoria Park\",\"Boro Zone\", 9,\"Queens\",\"Auburndale\",\"Boro Zone\", 10,\"Queens\",\"Baisley Park\",\"Boro Zone\", 11,\"Brooklyn\",\"Bath Beach\",\"Boro Zone\", 12,\"Manhattan\",\"Battery Park\",\"Yellow Zone\", 13,\"Manhattan\",\"Battery Park City\",\"Yellow Zone\", 14,\"Brooklyn\",\"Bay Ridge\",\"Boro Zone\", 15,\"Queens\",\"Bay Terrace/Fort Totten\",\"Boro Zone\", 16,\"Queens\",\"Bayside\",\"Boro Zone\", 17,\"Brooklyn\",\"Bedford\",\"Boro Zone\", 18,\"Bronx\",\"Bedfor...zoneDS: scala.collection.mutable.ListBuffer[Zone] \u003d ListBuffer(Zone(1,EWR,Newark Airport,EWR), Zone(2,Queens,Jamaica Bay,Boro Zone), Zone(3,Bronx,Allerton/Pelham Gardens,Boro Zone), Zone(4,Manhattan,Alphabet City,Yellow Zone), Zone(5,Staten Island,Arden Heights,Boro Zone), Zone(6,Staten Island,Arrochar/Fort Wadsworth,Boro Zone), Zone(7,Queens,Astoria,Boro Zone), Zone(8,Queens,Astoria Park,Boro Zone), Zone(9,Queens,Auburndale,Boro Zone), Zone(10,Queens,Baisley Park,Boro Zone), Zone(11,Brooklyn,Bath Beach,Boro Zone), Zone(12,Manhattan,Battery Park,Yellow Zone), Zone(13,Manhattan,Battery Park City,Yellow Zone), Zone(14,Brooklyn,Bay Ridge,Boro Zone), Zone(15,Queens,Bay Terrace/Fort Totten,Boro Zone), Zone(16,Queens,Bayside,Boro Zone), Zone(17,Brooklyn,Bedford,Boro Zone), Zone(18,Bronx,Bedfo...zoneData: org.apache.spark.sql.DataFrame \u003d [LocationID: string, Borough: string ... 2 more fields]\nwarning: there was one deprecation warning; re-run with -deprecation for details\n+----------+-------------+--------------------+------------+\n|LocationID|      Borough|                Zone|service_zone|\n+----------+-------------+--------------------+------------+\n|         1|          EWR|      Newark Airport|         EWR|\n|         2|       Queens|         Jamaica Bay|   Boro Zone|\n|         3|        Bronx|Allerton/Pelham G...|   Boro Zone|\n|         4|    Manhattan|       Alphabet City| Yellow Zone|\n|         5|Staten Island|       Arden Heights|   Boro Zone|\n|         6|Staten Island|Arrochar/Fort Wad...|   Boro Zone|\n|         7|       Queens|             Astoria|   Boro Zone|\n|         8|       Queens|        Astoria Park|   Boro Zone|\n|         9|       Queens|          Auburndale|   Boro Zone|\n|        10|       Queens|        Baisley Park|   Boro Zone|\n|        11|     Brooklyn|          Bath Beach|   Boro Zone|\n|        12|    Manhattan|        Battery Park| Yellow Zone|\n|        13|    Manhattan|   Battery Park City| Yellow Zone|\n|        14|     Brooklyn|           Bay Ridge|   Boro Zone|\n|        15|       Queens|Bay Terrace/Fort ...|   Boro Zone|\n|        16|       Queens|             Bayside|   Boro Zone|\n|        17|     Brooklyn|             Bedford|   Boro Zone|\n|        18|        Bronx|        Bedford Park|   Boro Zone|\n|        19|       Queens|           Bellerose|   Boro Zone|\n|        20|        Bronx|             Belmont|   Boro Zone|\n+----------+-------------+--------------------+------------+\nonly showing top 20 rows\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1542843528824_-1980182189",
+      "id": "20181121-233848_841719643",
+      "dateCreated": "2018-11-21 23:38:48.825",
+      "dateStarted": "2018-11-21 23:57:39.510",
+      "dateFinished": "2018-11-21 23:57:42.337",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark.sql \nselect zone_data.Borough, count(taxi_data.ID)\nfrom taxi_data, zone_data\nwhere PULocationID \u003d LocationID\ngroup by Borough\n",
+      "user": "admin",
+      "dateUpdated": "2018-11-22 00:01:57.633",
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 4.0,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9.0,
+        "results": [
+          {
+            "graph": {
+              "mode": "table",
+              "height": 366.0,
+              "optionOpen": false,
+              "setting": {
+                "multiBarChart": {
+                  "rotate": {
+                    "degree": "-45"
+                  },
+                  "xLabelStatus": "default",
+                  "stacked": true
+                },
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "Borough": "string",
+                      "count(ID)": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                },
+                "pieChart": {},
+                "stackedAreaChart": {
+                  "rotate": {
+                    "degree": "-45"
+                  },
+                  "xLabelStatus": "default"
+                },
+                "lineChart": {
+                  "rotate": {
+                    "degree": "-45"
+                  },
+                  "xLabelStatus": "default"
+                }
+              },
+              "commonSetting": {},
+              "keys": [
+                {
+                  "name": "Borough",
+                  "index": 0.0,
+                  "aggr": "sum"
+                }
+              ],
+              "groups": [],
+              "values": [
+                {
+                  "name": "count(ID)",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              ]
+            },
+            "helium": {}
+          }
+        ],
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "Borough\tcount(ID)\nQueens\t253\nUnknown\t237\nBrooklyn\t196\nManhattan\t9295\nBronx\t17\n"
+          }
+        ]
+      },
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "SPARK JOB",
+          "tooltip": "View in Spark web UI",
+          "group": "spark",
+          "values": [
+            "http://10.52.0.179:4040/jobs/job?id\u003d16",
+            "http://10.52.0.179:4040/jobs/job?id\u003d17",
+            "http://10.52.0.179:4040/jobs/job?id\u003d18",
+            "http://10.52.0.179:4040/jobs/job?id\u003d19",
+            "http://10.52.0.179:4040/jobs/job?id\u003d20",
+            "http://10.52.0.179:4040/jobs/job?id\u003d21"
+          ],
+          "interpreterSettingId": "spark"
+        }
+      },
+      "apps": [],
+      "jobName": "paragraph_1542841596937_1366823867",
+      "id": "20150210-015302_1492795503",
+      "dateCreated": "2018-11-21 23:06:36.937",
+      "dateStarted": "2018-11-21 23:58:05.999",
+      "dateFinished": "2018-11-21 23:58:09.115",
       "status": "FINISHED",
       "progressUpdateIntervalMs": 500
     },
@@ -201,38 +362,28 @@
       "progressUpdateIntervalMs": 500
     },
     {
-      "text": "%spark.sql \nselect avg(total_amount)\nfrom taxi_data\n",
+      "text": "%spark.sql\nselect *\nfrom zone_data",
       "user": "admin",
-      "dateUpdated": "2018-11-21 23:20:07.783",
+      "dateUpdated": "2018-11-22 00:00:38.615",
       "config": {
-        "editorSetting": {
-          "language": "sql",
-          "editOnDblClick": false,
-          "completionKey": "TAB",
-          "completionSupport": true
-        },
         "colWidth": 3.0,
-        "editorMode": "ace/mode/sql",
         "fontSize": 9.0,
-        "results": [
-          {
+        "enabled": true,
+        "results": {
+          "0": {
             "graph": {
-              "mode": "table",
-              "height": 366.0,
-              "optionOpen": false,
+              "mode": "pieChart",
+              "height": 300.0,
+              "optionOpen": true,
               "setting": {
-                "multiBarChart": {
-                  "rotate": {
-                    "degree": "-45"
-                  },
-                  "xLabelStatus": "default",
-                  "stacked": true
-                },
                 "table": {
                   "tableGridState": {},
                   "tableColumnTypeState": {
                     "names": {
-                      "avg(CAST(total_amount AS DOUBLE))": "string"
+                      "LocationID": "string",
+                      "Borough": "string",
+                      "Zone": "string",
+                      "service_zone": "string"
                     },
                     "updated": false
                   },
@@ -244,7 +395,14 @@
                   },
                   "updated": false,
                   "initialized": false
-                }
+                },
+                "multiBarChart": {
+                  "rotate": {
+                    "degree": "-45"
+                  },
+                  "xLabelStatus": "default"
+                },
+                "pieChart": {}
               },
               "commonSetting": {},
               "keys": [],
@@ -253,26 +411,40 @@
             },
             "helium": {}
           }
-        ],
-        "enabled": true
+        },
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/sql"
       },
       "settings": {
         "params": {},
         "forms": {}
       },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "LocationID\tBorough\tZone\tservice_zone\n1\tEWR\tNewark Airport\tEWR\n2\tQueens\tJamaica Bay\tBoro Zone\n3\tBronx\tAllerton/Pelham Gardens\tBoro Zone\n4\tManhattan\tAlphabet City\tYellow Zone\n5\tStaten Island\tArden Heights\tBoro Zone\n6\tStaten Island\tArrochar/Fort Wadsworth\tBoro Zone\n7\tQueens\tAstoria\tBoro Zone\n8\tQueens\tAstoria Park\tBoro Zone\n9\tQueens\tAuburndale\tBoro Zone\n10\tQueens\tBaisley Park\tBoro Zone\n11\tBrooklyn\tBath Beach\tBoro Zone\n12\tManhattan\tBattery Park\tYellow Zone\n13\tManhattan\tBattery Park City\tYellow Zone\n14\tBrooklyn\tBay Ridge\tBoro Zone\n15\tQueens\tBay Terrace/Fort Totten\tBoro Zone\n16\tQueens\tBayside\tBoro Zone\n17\tBrooklyn\tBedford\tBoro Zone\n18\tBronx\tBedford Park\tBoro Zone\n19\tQueens\tBellerose\tBoro Zone\n20\tBronx\tBelmont\tBoro Zone\n21\tBrooklyn\tBensonhurst East\tBoro Zone\n22\tBrooklyn\tBensonhurst West\tBoro Zone\n23\tStaten Island\tBloomfield/Emerson Hill\tBoro Zone\n24\tManhattan\tBloomingdale\tYellow Zone\n25\tBrooklyn\tBoerum Hill\tBoro Zone\n26\tBrooklyn\tBorough Park\tBoro Zone\n27\tQueens\tBreezy Point/Fort Tilden/Riis Beach\tBoro Zone\n28\tQueens\tBriarwood/Jamaica Hills\tBoro Zone\n29\tBrooklyn\tBrighton Beach\tBoro Zone\n30\tQueens\tBroad Channel\tBoro Zone\n31\tBronx\tBronx Park\tBoro Zone\n32\tBronx\tBronxdale\tBoro Zone\n33\tBrooklyn\tBrooklyn Heights\tBoro Zone\n34\tBrooklyn\tBrooklyn Navy Yard\tBoro Zone\n35\tBrooklyn\tBrownsville\tBoro Zone\n36\tBrooklyn\tBushwick North\tBoro Zone\n37\tBrooklyn\tBushwick South\tBoro Zone\n38\tQueens\tCambria Heights\tBoro Zone\n39\tBrooklyn\tCanarsie\tBoro Zone\n40\tBrooklyn\tCarroll Gardens\tBoro Zone\n41\tManhattan\tCentral Harlem\tBoro Zone\n42\tManhattan\tCentral Harlem North\tBoro Zone\n43\tManhattan\tCentral Park\tYellow Zone\n44\tStaten Island\tCharleston/Tottenville\tBoro Zone\n45\tManhattan\tChinatown\tYellow Zone\n46\tBronx\tCity Island\tBoro Zone\n47\tBronx\tClaremont/Bathgate\tBoro Zone\n48\tManhattan\tClinton East\tYellow Zone\n49\tBrooklyn\tClinton Hill\tBoro Zone\n50\tManhattan\tClinton West\tYellow Zone\n51\tBronx\tCo-Op City\tBoro Zone\n52\tBrooklyn\tCobble Hill\tBoro Zone\n53\tQueens\tCollege Point\tBoro Zone\n54\tBrooklyn\tColumbia Street\tBoro Zone\n55\tBrooklyn\tConey Island\tBoro Zone\n56\tQueens\tCorona\tBoro Zone\n57\tQueens\tCorona\tBoro Zone\n58\tBronx\tCountry Club\tBoro Zone\n59\tBronx\tCrotona Park\tBoro Zone\n60\tBronx\tCrotona Park East\tBoro Zone\n61\tBrooklyn\tCrown Heights North\tBoro Zone\n62\tBrooklyn\tCrown Heights South\tBoro Zone\n63\tBrooklyn\tCypress Hills\tBoro Zone\n64\tQueens\tDouglaston\tBoro Zone\n65\tBrooklyn\tDowntown Brooklyn/MetroTech\tBoro Zone\n66\tBrooklyn\tDUMBO/Vinegar Hill\tBoro Zone\n67\tBrooklyn\tDyker Heights\tBoro Zone\n68\tManhattan\tEast Chelsea\tYellow Zone\n69\tBronx\tEast Concourse/Concourse Village\tBoro Zone\n70\tQueens\tEast Elmhurst\tBoro Zone\n71\tBrooklyn\tEast Flatbush/Farragut\tBoro Zone\n72\tBrooklyn\tEast Flatbush/Remsen Village\tBoro Zone\n73\tQueens\tEast Flushing\tBoro Zone\n74\tManhattan\tEast Harlem North\tBoro Zone\n75\tManhattan\tEast Harlem South\tBoro Zone\n76\tBrooklyn\tEast New York\tBoro Zone\n77\tBrooklyn\tEast New York/Pennsylvania Avenue\tBoro Zone\n78\tBronx\tEast Tremont\tBoro Zone\n79\tManhattan\tEast Village\tYellow Zone\n80\tBrooklyn\tEast Williamsburg\tBoro Zone\n81\tBronx\tEastchester\tBoro Zone\n82\tQueens\tElmhurst\tBoro Zone\n83\tQueens\tElmhurst/Maspeth\tBoro Zone\n84\tStaten Island\tEltingville/Annadale/Prince\u0027s Bay\tBoro Zone\n85\tBrooklyn\tErasmus\tBoro Zone\n86\tQueens\tFar Rockaway\tBoro Zone\n87\tManhattan\tFinancial District North\tYellow Zone\n88\tManhattan\tFinancial District South\tYellow Zone\n89\tBrooklyn\tFlatbush/Ditmas Park\tBoro Zone\n90\tManhattan\tFlatiron\tYellow Zone\n91\tBrooklyn\tFlatlands\tBoro Zone\n92\tQueens\tFlushing\tBoro Zone\n93\tQueens\tFlushing Meadows-Corona Park\tBoro Zone\n94\tBronx\tFordham South\tBoro Zone\n95\tQueens\tForest Hills\tBoro Zone\n96\tQueens\tForest Park/Highland Park\tBoro Zone\n97\tBrooklyn\tFort Greene\tBoro Zone\n98\tQueens\tFresh Meadows\tBoro Zone\n99\tStaten Island\tFreshkills Park\tBoro Zone\n100\tManhattan\tGarment District\tYellow Zone\n101\tQueens\tGlen Oaks\tBoro Zone\n102\tQueens\tGlendale\tBoro Zone\n103\tManhattan\tGovernor\u0027s Island/Ellis Island/Liberty Island\tYellow Zone\n104\tManhattan\tGovernor\u0027s Island/Ellis Island/Liberty Island\tYellow Zone\n105\tManhattan\tGovernor\u0027s Island/Ellis Island/Liberty Island\tYellow Zone\n106\tBrooklyn\tGowanus\tBoro Zone\n107\tManhattan\tGramercy\tYellow Zone\n108\tBrooklyn\tGravesend\tBoro Zone\n109\tStaten Island\tGreat Kills\tBoro Zone\n110\tStaten Island\tGreat Kills Park\tBoro Zone\n111\tBrooklyn\tGreen-Wood Cemetery\tBoro Zone\n112\tBrooklyn\tGreenpoint\tBoro Zone\n113\tManhattan\tGreenwich Village North\tYellow Zone\n114\tManhattan\tGreenwich Village South\tYellow Zone\n115\tStaten Island\tGrymes Hill/Clifton\tBoro Zone\n116\tManhattan\tHamilton Heights\tBoro Zone\n117\tQueens\tHammels/Arverne\tBoro Zone\n118\tStaten Island\tHeartland Village/Todt Hill\tBoro Zone\n119\tBronx\tHighbridge\tBoro Zone\n120\tManhattan\tHighbridge Park\tBoro Zone\n121\tQueens\tHillcrest/Pomonok\tBoro Zone\n122\tQueens\tHollis\tBoro Zone\n123\tBrooklyn\tHomecrest\tBoro Zone\n124\tQueens\tHoward Beach\tBoro Zone\n125\tManhattan\tHudson Sq\tYellow Zone\n126\tBronx\tHunts Point\tBoro Zone\n127\tManhattan\tInwood\tBoro Zone\n128\tManhattan\tInwood Hill Park\tBoro Zone\n129\tQueens\tJackson Heights\tBoro Zone\n130\tQueens\tJamaica\tBoro Zone\n131\tQueens\tJamaica Estates\tBoro Zone\n132\tQueens\tJFK Airport\tAirports\n133\tBrooklyn\tKensington\tBoro Zone\n134\tQueens\tKew Gardens\tBoro Zone\n135\tQueens\tKew Gardens Hills\tBoro Zone\n136\tBronx\tKingsbridge Heights\tBoro Zone\n137\tManhattan\tKips Bay\tYellow Zone\n138\tQueens\tLaGuardia Airport\tAirports\n139\tQueens\tLaurelton\tBoro Zone\n140\tManhattan\tLenox Hill East\tYellow Zone\n141\tManhattan\tLenox Hill West\tYellow Zone\n142\tManhattan\tLincoln Square East\tYellow Zone\n143\tManhattan\tLincoln Square West\tYellow Zone\n144\tManhattan\tLittle Italy/NoLiTa\tYellow Zone\n145\tQueens\tLong Island City/Hunters Point\tBoro Zone\n146\tQueens\tLong Island City/Queens Plaza\tBoro Zone\n147\tBronx\tLongwood\tBoro Zone\n148\tManhattan\tLower East Side\tYellow Zone\n149\tBrooklyn\tMadison\tBoro Zone\n150\tBrooklyn\tManhattan Beach\tBoro Zone\n151\tManhattan\tManhattan Valley\tYellow Zone\n152\tManhattan\tManhattanville\tBoro Zone\n153\tManhattan\tMarble Hill\tBoro Zone\n154\tBrooklyn\tMarine Park/Floyd Bennett Field\tBoro Zone\n155\tBrooklyn\tMarine Park/Mill Basin\tBoro Zone\n156\tStaten Island\tMariners Harbor\tBoro Zone\n157\tQueens\tMaspeth\tBoro Zone\n158\tManhattan\tMeatpacking/West Village West\tYellow Zone\n159\tBronx\tMelrose South\tBoro Zone\n160\tQueens\tMiddle Village\tBoro Zone\n161\tManhattan\tMidtown Center\tYellow Zone\n162\tManhattan\tMidtown East\tYellow Zone\n163\tManhattan\tMidtown North\tYellow Zone\n164\tManhattan\tMidtown South\tYellow Zone\n165\tBrooklyn\tMidwood\tBoro Zone\n166\tManhattan\tMorningside Heights\tBoro Zone\n167\tBronx\tMorrisania/Melrose\tBoro Zone\n168\tBronx\tMott Haven/Port Morris\tBoro Zone\n169\tBronx\tMount Hope\tBoro Zone\n170\tManhattan\tMurray Hill\tYellow Zone\n171\tQueens\tMurray Hill-Queens\tBoro Zone\n172\tStaten Island\tNew Dorp/Midland Beach\tBoro Zone\n173\tQueens\tNorth Corona\tBoro Zone\n174\tBronx\tNorwood\tBoro Zone\n175\tQueens\tOakland Gardens\tBoro Zone\n176\tStaten Island\tOakwood\tBoro Zone\n177\tBrooklyn\tOcean Hill\tBoro Zone\n178\tBrooklyn\tOcean Parkway South\tBoro Zone\n179\tQueens\tOld Astoria\tBoro Zone\n180\tQueens\tOzone Park\tBoro Zone\n181\tBrooklyn\tPark Slope\tBoro Zone\n182\tBronx\tParkchester\tBoro Zone\n183\tBronx\tPelham Bay\tBoro Zone\n184\tBronx\tPelham Bay Park\tBoro Zone\n185\tBronx\tPelham Parkway\tBoro Zone\n186\tManhattan\tPenn Station/Madison Sq West\tYellow Zone\n187\tStaten Island\tPort Richmond\tBoro Zone\n188\tBrooklyn\tProspect-Lefferts Gardens\tBoro Zone\n189\tBrooklyn\tProspect Heights\tBoro Zone\n190\tBrooklyn\tProspect Park\tBoro Zone\n191\tQueens\tQueens Village\tBoro Zone\n192\tQueens\tQueensboro Hill\tBoro Zone\n193\tQueens\tQueensbridge/Ravenswood\tBoro Zone\n194\tManhattan\tRandalls Island\tYellow Zone\n195\tBrooklyn\tRed Hook\tBoro Zone\n196\tQueens\tRego Park\tBoro Zone\n197\tQueens\tRichmond Hill\tBoro Zone\n198\tQueens\tRidgewood\tBoro Zone\n199\tBronx\tRikers Island\tBoro Zone\n200\tBronx\tRiverdale/North Riverdale/Fieldston\tBoro Zone\n201\tQueens\tRockaway Park\tBoro Zone\n202\tManhattan\tRoosevelt Island\tBoro Zone\n203\tQueens\tRosedale\tBoro Zone\n204\tStaten Island\tRossville/Woodrow\tBoro Zone\n205\tQueens\tSaint Albans\tBoro Zone\n206\tStaten Island\tSaint George/New Brighton\tBoro Zone\n207\tQueens\tSaint Michaels Cemetery/Woodside\tBoro Zone\n208\tBronx\tSchuylerville/Edgewater Park\tBoro Zone\n209\tManhattan\tSeaport\tYellow Zone\n210\tBrooklyn\tSheepshead Bay\tBoro Zone\n211\tManhattan\tSoHo\tYellow Zone\n212\tBronx\tSoundview/Bruckner\tBoro Zone\n213\tBronx\tSoundview/Castle Hill\tBoro Zone\n214\tStaten Island\tSouth Beach/Dongan Hills\tBoro Zone\n215\tQueens\tSouth Jamaica\tBoro Zone\n216\tQueens\tSouth Ozone Park\tBoro Zone\n217\tBrooklyn\tSouth Williamsburg\tBoro Zone\n218\tQueens\tSpringfield Gardens North\tBoro Zone\n219\tQueens\tSpringfield Gardens South\tBoro Zone\n220\tBronx\tSpuyten Duyvil/Kingsbridge\tBoro Zone\n221\tStaten Island\tStapleton\tBoro Zone\n222\tBrooklyn\tStarrett City\tBoro Zone\n223\tQueens\tSteinway\tBoro Zone\n224\tManhattan\tStuy Town/Peter Cooper Village\tYellow Zone\n225\tBrooklyn\tStuyvesant Heights\tBoro Zone\n226\tQueens\tSunnyside\tBoro Zone\n227\tBrooklyn\tSunset Park East\tBoro Zone\n228\tBrooklyn\tSunset Park West\tBoro Zone\n229\tManhattan\tSutton Place/Turtle Bay North\tYellow Zone\n230\tManhattan\tTimes Sq/Theatre District\tYellow Zone\n231\tManhattan\tTriBeCa/Civic Center\tYellow Zone\n232\tManhattan\tTwo Bridges/Seward Park\tYellow Zone\n233\tManhattan\tUN/Turtle Bay South\tYellow Zone\n234\tManhattan\tUnion Sq\tYellow Zone\n235\tBronx\tUniversity Heights/Morris Heights\tBoro Zone\n236\tManhattan\tUpper East Side North\tYellow Zone\n237\tManhattan\tUpper East Side South\tYellow Zone\n238\tManhattan\tUpper West Side North\tYellow Zone\n239\tManhattan\tUpper West Side South\tYellow Zone\n240\tBronx\tVan Cortlandt Park\tBoro Zone\n241\tBronx\tVan Cortlandt Village\tBoro Zone\n242\tBronx\tVan Nest/Morris Park\tBoro Zone\n243\tManhattan\tWashington Heights North\tBoro Zone\n244\tManhattan\tWashington Heights South\tBoro Zone\n245\tStaten Island\tWest Brighton\tBoro Zone\n246\tManhattan\tWest Chelsea/Hudson Yards\tYellow Zone\n247\tBronx\tWest Concourse\tBoro Zone\n248\tBronx\tWest Farms/Bronx River\tBoro Zone\n249\tManhattan\tWest Village\tYellow Zone\n250\tBronx\tWestchester Village/Unionport\tBoro Zone\n251\tStaten Island\tWesterleigh\tBoro Zone\n252\tQueens\tWhitestone\tBoro Zone\n253\tQueens\tWillets Point\tBoro Zone\n254\tBronx\tWilliamsbridge/Olinville\tBoro Zone\n255\tBrooklyn\tWilliamsburg (North Side)\tBoro Zone\n256\tBrooklyn\tWilliamsburg (South Side)\tBoro Zone\n257\tBrooklyn\tWindsor Terrace\tBoro Zone\n258\tQueens\tWoodhaven\tBoro Zone\n259\tBronx\tWoodlawn/Wakefield\tBoro Zone\n260\tQueens\tWoodside\tBoro Zone\n261\tManhattan\tWorld Trade Center\tYellow Zone\n262\tManhattan\tYorkville East\tYellow Zone\n263\tManhattan\tYorkville West\tYellow Zone\n264\tUnknown\tNV\tN/A\n265\tUnknown\tNA\tN/A\n"
+          }
+        ]
+      },
       "apps": [],
-      "jobName": "paragraph_1542841596937_1366823867",
-      "id": "20150210-015302_1492795503",
-      "dateCreated": "2018-11-21 23:06:36.937",
-      "dateStarted": "2018-11-21 23:20:07.800",
-      "dateFinished": "2018-11-21 23:20:07.904",
+      "jobName": "paragraph_1542844412454_197666846",
+      "id": "20181121-235332_1967238628",
+      "dateCreated": "2018-11-21 23:53:32.455",
+      "dateStarted": "2018-11-21 23:58:00.373",
+      "dateFinished": "2018-11-21 23:58:00.408",
       "status": "FINISHED",
-      "errorMessage": "",
       "progressUpdateIntervalMs": 500
     },
     {
       "user": "admin",
-      "dateUpdated": "2018-11-21 23:20:08.000",
+      "dateUpdated": "2018-11-21 23:53:49.483",
       "config": {
         "editorSetting": {
           "language": "scala",
@@ -280,7 +452,7 @@
           "completionSupport": true,
           "completionKey": "TAB"
         },
-        "colWidth": 12.0,
+        "colWidth": 3.0,
         "editorMode": "ace/mode/scala",
         "fontSize": 9.0,
         "results": {},
