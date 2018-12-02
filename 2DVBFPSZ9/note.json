@@ -3,7 +3,7 @@
     {
       "text": "%md\n# Welcome to NYC-TLC\n## New York City Taxi Data Analysis\n#### Written by Eliemer E. Velez and Mark A. Sukhram",
       "user": "admin",
-      "dateUpdated": "2018-12-02 21:56:23.804",
+      "dateUpdated": "2018-12-02 22:46:32.147",
       "config": {
         "tableHide": false,
         "editorSetting": {
@@ -48,8 +48,8 @@
       "jobName": "paragraph_1542841596932_851464577",
       "id": "20150213-231621_168813393",
       "dateCreated": "2018-11-21 23:06:36.932",
-      "dateStarted": "2018-12-02 19:11:54.685",
-      "dateFinished": "2018-12-02 19:11:54.696",
+      "dateStarted": "2018-12-02 22:46:32.183",
+      "dateFinished": "2018-12-02 22:46:32.194",
       "status": "FINISHED",
       "progressUpdateIntervalMs": 500
     },
@@ -57,7 +57,7 @@
       "title": "Load taxi and zone data",
       "text": "\n%spark\nimplicit val render \u003d vegas.render.ShowHTML(s \u003d\u003e print( \"%html \"+ s))\n\nval hours \u003d sc.parallelize(Seq(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24)).toDF()\n\n\nvar taxi_data \u003d spark.read.format(\"csv\").option(\"header\", \"true\").option(\"inferSchema\", \"true\").load(\"taxi_data/yellow_tripdata_2018-01.csv\")\n//taxi_data.show()\n\ntaxi_data \u003d taxi_data.withColumn(\"ID\", monotonically_increasing_id())\n\n\nval zone_data \u003d spark.read.format(\"csv\").option(\"header\", \"true\").option(\"inferSchema\", \"true\").load(\"taxi_data/taxi_zone_lookup.csv\")\n\n\nhours.createOrReplaceTempView(\"hours\")\ntaxi_data.createOrReplaceTempView(\"taxi_data\")\nzone_data.createOrReplaceTempView(\"zone_data\")",
       "user": "admin",
-      "dateUpdated": "2018-12-02 21:56:32.691",
+      "dateUpdated": "2018-12-02 22:46:32.282",
       "config": {
         "tableHide": true,
         "editorSetting": {
@@ -98,10 +98,10 @@
           "tooltip": "View in Spark web UI",
           "group": "spark",
           "values": [
-            "http://10.52.0.231:4040/jobs/job?id\u003d28",
-            "http://10.52.0.231:4040/jobs/job?id\u003d29",
-            "http://10.52.0.231:4040/jobs/job?id\u003d30",
-            "http://10.52.0.231:4040/jobs/job?id\u003d31"
+            "http://10.52.0.231:4040/jobs/job?id\u003d344",
+            "http://10.52.0.231:4040/jobs/job?id\u003d345",
+            "http://10.52.0.231:4040/jobs/job?id\u003d346",
+            "http://10.52.0.231:4040/jobs/job?id\u003d347"
           ],
           "interpreterSettingId": "spark"
         }
@@ -110,8 +110,59 @@
       "jobName": "paragraph_1542841596936_374734793",
       "id": "20181121-152004_799962554",
       "dateCreated": "2018-11-21 23:06:36.936",
-      "dateStarted": "2018-12-02 20:48:32.898",
-      "dateFinished": "2018-12-02 20:48:40.477",
+      "dateStarted": "2018-12-02 22:46:32.313",
+      "dateFinished": "2018-12-02 22:46:38.815",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "title": "Load payment types",
+      "text": "%spark\n\nval payments \u003d Seq((1, \"Credit Card\"),(2, \"Cash\"), (3, \"No charge\"), (4, \"Dispute\"), (5, \"Unknown\"), (6, \"Voided trip\"))\nval paymentDF \u003d payments.toDF(\"id\", \"payment_name\")\n\npaymentDF.show()\n\npaymentDF.createOrReplaceTempView(\"payment_data\") ",
+      "user": "admin",
+      "dateUpdated": "2018-12-02 22:46:38.851",
+      "config": {
+        "colWidth": 3.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 97.45,
+              "optionOpen": false
+            }
+          }
+        },
+        "editorSetting": {
+          "language": "scala",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/scala",
+        "editorHide": true,
+        "tableHide": true,
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "payments: Seq[(Int, String)] \u003d List((1,Credit Card), (2,Cash), (3,No charge), (4,Dispute), (5,Unknown), (6,Voided trip))\npaymentDF: org.apache.spark.sql.DataFrame \u003d [id: int, payment_name: string]\n+---+------------+\n| id|payment_name|\n+---+------------+\n|  1| Credit Card|\n|  2|        Cash|\n|  3|   No charge|\n|  4|     Dispute|\n|  5|     Unknown|\n|  6| Voided trip|\n+---+------------+\n\n"
+          }
+        ]
+      },
+      "apps": [],
+      "jobName": "paragraph_1543788514949_-2122148653",
+      "id": "20181202-220834_768248223",
+      "dateCreated": "2018-12-02 22:08:34.949",
+      "dateStarted": "2018-12-02 22:46:38.881",
+      "dateFinished": "2018-12-02 22:46:39.537",
       "status": "FINISHED",
       "progressUpdateIntervalMs": 500
     },
@@ -119,9 +170,9 @@
       "title": "Load Pickups and Dropoffs per hour",
       "text": "%spark\n\nval pickups \u003d spark.sql(\"SELECT HOUR(tpep_pickup_datetime) as pickup_time, count(ID) as pickups FROM taxi_data GROUP BY pickup_time\")\n\nval dropoffs \u003d spark.sql(\"SELECT HOUR(tpep_dropoff_datetime) as dropoff_time, count(ID) as dropoffs FROM taxi_data GROUP BY dropoff_time\")\n\npickups.createOrReplaceTempView(\"pickups\")\ndropoffs.createOrReplaceTempView(\"dropoffs\")\n\n",
       "user": "admin",
-      "dateUpdated": "2018-12-02 21:57:08.471",
+      "dateUpdated": "2018-12-02 22:46:39.581",
       "config": {
-        "colWidth": 2.0,
+        "colWidth": 3.0,
         "fontSize": 9.0,
         "enabled": true,
         "results": {
@@ -191,8 +242,8 @@
           "completionSupport": true
         },
         "editorMode": "ace/mode/scala",
-        "editorHide": false,
-        "tableHide": false,
+        "editorHide": true,
+        "tableHide": true,
         "title": true
       },
       "settings": {
@@ -212,8 +263,8 @@
       "jobName": "paragraph_1543782159064_-2067448782",
       "id": "20181202-202239_1285661796",
       "dateCreated": "2018-12-02 20:22:39.064",
-      "dateStarted": "2018-12-02 21:57:08.511",
-      "dateFinished": "2018-12-02 21:57:09.132",
+      "dateStarted": "2018-12-02 22:46:39.603",
+      "dateFinished": "2018-12-02 22:46:40.054",
       "status": "FINISHED",
       "progressUpdateIntervalMs": 500
     },
@@ -221,7 +272,7 @@
       "title": "Number of Trips by District in a Month",
       "text": "%spark.sql \nselect zone_data.Borough, count(taxi_data.ID)\nfrom taxi_data, zone_data\nwhere PULocationID \u003d LocationID\ngroup by Borough",
       "user": "admin",
-      "dateUpdated": "2018-12-02 21:47:43.175",
+      "dateUpdated": "2018-12-02 22:46:40.103",
       "config": {
         "colWidth": 4.0,
         "fontSize": 9.0,
@@ -265,7 +316,8 @@
         },
         "editorMode": "ace/mode/sql",
         "title": true,
-        "editorHide": false
+        "editorHide": true,
+        "tableHide": false
       },
       "settings": {
         "params": {},
@@ -276,16 +328,33 @@
         "msg": [
           {
             "type": "TABLE",
-            "data": "pickup_location\tnumber_of_trips\nQueens\t526906\nEWR\t571\nUnknown\t158911\nBrooklyn\t100250\nStaten Island\t144\nManhattan\t7965703\nBronx\t7389\n"
+            "data": "Borough\tcount(ID)\nQueens\t526906\nEWR\t571\nUnknown\t158911\nBrooklyn\t100250\nStaten Island\t144\nManhattan\t7965703\nBronx\t7389\n"
           }
         ]
+      },
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "SPARK JOB",
+          "tooltip": "View in Spark web UI",
+          "group": "spark",
+          "values": [
+            "http://10.52.0.231:4040/jobs/job?id\u003d348",
+            "http://10.52.0.231:4040/jobs/job?id\u003d349",
+            "http://10.52.0.231:4040/jobs/job?id\u003d350",
+            "http://10.52.0.231:4040/jobs/job?id\u003d351",
+            "http://10.52.0.231:4040/jobs/job?id\u003d352",
+            "http://10.52.0.231:4040/jobs/job?id\u003d353"
+          ],
+          "interpreterSettingId": "spark"
+        }
       },
       "apps": [],
       "jobName": "paragraph_1543694956787_1041445172",
       "id": "20181201-200916_1865360759",
       "dateCreated": "2018-12-01 20:09:16.787",
-      "dateStarted": "2018-12-01 20:40:17.220",
-      "dateFinished": "2018-12-01 20:44:39.671",
+      "dateStarted": "2018-12-02 22:46:40.122",
+      "dateFinished": "2018-12-02 22:46:41.498",
       "status": "FINISHED",
       "progressUpdateIntervalMs": 500
     },
@@ -293,7 +362,7 @@
       "title": "Passenger Count by Hour",
       "text": "%spark.sql \nSELECT HOUR(tpep_pickup_datetime) AS time, \nsum(passenger_count) AS count,\nHOUR(tpep_dropoff_datetime) AS time_drop\nFROM taxi_data\nGROUP BY time, time_drop",
       "user": "admin",
-      "dateUpdated": "2018-12-02 21:54:50.709",
+      "dateUpdated": "2018-12-02 22:47:06.988",
       "config": {
         "editorSetting": {
           "language": "sql",
@@ -301,14 +370,14 @@
           "completionKey": "TAB",
           "completionSupport": true
         },
-        "colWidth": 4.0,
+        "colWidth": 5.0,
         "editorMode": "ace/mode/sql",
         "fontSize": 9.0,
         "results": [
           {
             "graph": {
               "mode": "multiBarChart",
-              "height": 366.0,
+              "height": 500.0,
               "optionOpen": false,
               "setting": {
                 "multiBarChart": {
@@ -374,7 +443,8 @@
         ],
         "enabled": true,
         "editorHide": true,
-        "title": true
+        "title": true,
+        "tableHide": false
       },
       "settings": {
         "params": {},
@@ -385,16 +455,32 @@
         "msg": [
           {
             "type": "TABLE",
-            "data": "time\tcount\ttime_drop\n15\t542.0\t14\n23\t1.0\t6\n13\t4.0\t10\n1\t355.0\t0\n9\t146159.0\t10\n5\t2.0\t16\n15\t608793.0\t15\n3\t13.0\t1\n2\t196342.0\t2\n18\t22.0\t16\n8\t148555.0\t9\n20\t99.0\t22\n10\t1.0\t15\n22\t140504.0\t23\n12\t3.0\t17\n23\t1.0\t17\n0\t1.0\t20\n2\t38996.0\t3\n4\t2.0\t7\n1\t4.0\t20\n14\t1771.0\t16\n15\t1.0\t12\n14\t580759.0\t14\n1\t53712.0\t2\n9\t8.0\t13\n23\t16.0\t21\n18\t2.0\t14\n6\t100.0\t0\n16\t602.0\t15\n17\t1594.0\t19\n14\t2.0\t11\n23\t101888.0\t0\n13\t703.0\t15\n4\t1.0\t22\n4\t64.0\t0\n14\t185627.0\t15\n10\t42.0\t13\n13\t1.0\t9\n5\t3.0\t22\n15\t1.0\t22\n0\t1.0\t5\n10\t1.0\t16\n16\t567949.0\t16\n22\t9.0\t19\n23\t3.0\t2\n5\t87.0\t7\n5\t30446.0\t6\n1\t1.0\t22\n16\t157.0\t0\n8\t3.0\t13\n19\t705754.0\t19\n11\t1.0\t16\n6\t675.0\t8\n17\t6.0\t10\n1\t258587.0\t1\n14\t679.0\t13\n17\t7.0\t14\n6\t383.0\t5\n9\t19.0\t7\n18\t478.0\t20\n17\t206429.0\t18\n1\t39.0\t3\n23\t462199.0\t23\n8\t5.0\t12\n19\t19.0\t22\n0\t30.0\t22\n10\t1.0\t6\n3\t30.0\t5\n22\t580883.0\t22\n19\t14.0\t17\n2\t1.0\t5\n15\t1.0\t11\n23\t5.0\t19\n0\t2.0\t16\n0\t352389.0\t0\n16\t1.0\t9\n1\t4.0\t4\n5\t156.0\t4\n9\t21.0\t12\n7\t1732.0\t9\n23\t2.0\t3\n0\t1.0\t17\n8\t759.0\t10\n3\t140065.0\t3\n23\t1.0\t5\n17\t1.0\t11\n23\t12.0\t20\n14\t1.0\t20\n18\t9.0\t21\n16\t172366.0\t17\n8\t6.0\t5\n21\t99.0\t23\n22\t2.0\t18\n19\t3.0\t23\n1\t14.0\t23\n11\t25.0\t9\n22\t1.0\t17\n12\t24.0\t15\n17\t2.0\t9\n20\t10.0\t23\n0\t1.0\t9\n4\t152.0\t3\n21\t28.0\t19\n22\t184.0\t0\n21\t163780.0\t22\n6\t66867.0\t7\n15\t1986.0\t17\n7\t5.0\t12\n2\t241.0\t1\n15\t29.0\t18\n8\t2.0\t11\n7\t1.0\t11\n8\t503499.0\t8\n13\t2.0\t18\n14\t1.0\t19\n2\t60.0\t4\n14\t190.0\t0\n20\t4.0\t18\n18\t4.0\t22\n21\t455.0\t20\n12\t438.0\t14\n0\t3.0\t15\n18\t1.0\t5\n9\t577.0\t11\n4\t37.0\t6\n21\t135.0\t0\n18\t4.0\t15\n19\t5.0\t14\n16\t2566.0\t18\n6\t2.0\t3\n17\t1.0\t23\n12\t153.0\t0\n21\t613285.0\t21\n9\t400.0\t8\n8\t517.0\t7\n12\t555132.0\t12\n11\t293.0\t13\n12\t2.0\t8\n17\t1.0\t12\n13\t14.0\t11\n11\t4.0\t22\n7\t3.0\t5\n5\t5.0\t10\n13\t20.0\t16\n15\t1.0\t20\n6\t1.0\t2\n0\t1.0\t11\n10\t448.0\t9\n20\t1.0\t8\n3\t1.0\t9\n18\t130.0\t0\n15\t18.0\t13\n23\t5.0\t14\n0\t76280.0\t1\n2\t98.0\t0\n11\t134.0\t0\n11\t513053.0\t11\n11\t24.0\t14\n21\t3.0\t1\n3\t1.0\t21\n17\t1.0\t4\n0\t4.0\t19\n18\t718026.0\t18\n19\t528.0\t18\n5\t7.0\t8\n1\t1.0\t17\n16\t26.0\t14\n21\t1.0\t17\n14\t2.0\t9\n20\t99.0\t0\n19\t1.0\t16\n11\t1.0\t17\n18\t600.0\t17\n6\t2.0\t10\n17\t623867.0\t17\n13\t208.0\t0\n17\t4.0\t21\n12\t2.0\t9\n7\t120330.0\t8\n16\t26.0\t19\n5\t1.0\t15\n23\t371.0\t22\n22\t427.0\t21\n21\t2.0\t18\n5\t93.0\t0\n2\t1.0\t23\n19\t172731.0\t20\n0\t2.0\t8\n3\t144.0\t2\n5\t2.0\t2\n17\t2.0\t22\n13\t165955.0\t14\n19\t231.0\t21\n11\t9.0\t15\n10\t361.0\t12\n12\t1.0\t18\n8\t161.0\t0\n9\t105.0\t0\n5\t3.0\t3\n16\t2.0\t10\n14\t13.0\t18\n9\t3.0\t14\n17\t23.0\t20\n9\t509138.0\t9\n14\t21.0\t12\n0\t83.0\t2\n7\t396887.0\t7\n10\t145144.0\t11\n23\t82.0\t1\n3\t30116.0\t4\n4\t10.0\t2\n17\t18.0\t15\n7\t14.0\t10\n19\t6.0\t15\n15\t1.0\t21\n4\t109595.0\t4\n13\t412.0\t12\n12\t353.0\t11\n10\t497003.0\t10\n21\t1.0\t9\n20\t156866.0\t21\n6\t230420.0\t6\n12\t159069.0\t13\n8\t7.0\t6\n10\t2.0\t14\n15\t8.0\t19\n0\t2.0\t3\n10\t1.0\t7\n20\t2.0\t17\n13\t5.0\t17\n3\t45.0\t0\n12\t14.0\t10\n20\t4.0\t6\n13\t1.0\t19\n12\t4.0\t16\n10\t100.0\t0\n9\t2.0\t6\n4\t3.0\t1\n6\t11.0\t9\n3\t2.0\t7\n19\t106.0\t0\n13\t553683.0\t13\n0\t7.0\t4\n18\t206403.0\t19\n20\t391.0\t19\n17\t608.0\t16\n15\t180993.0\t16\n4\t5.0\t8\n2\t2.0\t7\n11\t155637.0\t12\n17\t183.0\t0\n4\t20741.0\t5\n0\t1.0\t12\n16\t9.0\t20\n22\t1.0\t4\n16\t3.0\t13\n14\t6.0\t10\n0\t2.0\t21\n20\t621150.0\t20\n5\t102888.0\t5\n15\t204.0\t0\n14\t14.0\t17\n7\t139.0\t0\n7\t796.0\t6\n16\t1.0\t22\n22\t24.0\t20\n16\t2.0\t12\n11\t488.0\t10\n22\t4.0\t3\n22\t3.0\t1\n2\t1.0\t16\n0\t299.0\t23\n6\t7.0\t4\n10\t19.0\t8\n2\t5.0\t6\n"
+            "data": "time\tcount\ttime_drop\n15\t542\t14\n23\t1\t6\n13\t4\t10\n1\t355\t0\n9\t146159\t10\n5\t2\t16\n15\t608793\t15\n3\t13\t1\n2\t196342\t2\n18\t22\t16\n8\t148555\t9\n20\t99\t22\n10\t1\t15\n22\t140504\t23\n12\t3\t17\n23\t1\t17\n0\t1\t20\n2\t38996\t3\n4\t2\t7\n1\t4\t20\n14\t1771\t16\n15\t1\t12\n14\t580759\t14\n1\t53712\t2\n9\t8\t13\n23\t16\t21\n18\t2\t14\n6\t100\t0\n16\t602\t15\n17\t1594\t19\n14\t2\t11\n23\t101888\t0\n13\t703\t15\n4\t1\t22\n4\t64\t0\n14\t185627\t15\n10\t42\t13\n13\t1\t9\n5\t3\t22\n15\t1\t22\n0\t1\t5\n10\t1\t16\n16\t567949\t16\n22\t9\t19\n23\t3\t2\n5\t87\t7\n5\t30446\t6\n1\t1\t22\n16\t157\t0\n8\t3\t13\n19\t705754\t19\n11\t1\t16\n6\t675\t8\n17\t6\t10\n1\t258587\t1\n14\t679\t13\n17\t7\t14\n6\t383\t5\n9\t19\t7\n18\t478\t20\n17\t206429\t18\n1\t39\t3\n23\t462199\t23\n8\t5\t12\n19\t19\t22\n0\t30\t22\n10\t1\t6\n3\t30\t5\n22\t580883\t22\n19\t14\t17\n2\t1\t5\n15\t1\t11\n23\t5\t19\n0\t2\t16\n0\t352389\t0\n16\t1\t9\n1\t4\t4\n5\t156\t4\n9\t21\t12\n7\t1732\t9\n23\t2\t3\n0\t1\t17\n8\t759\t10\n3\t140065\t3\n23\t1\t5\n17\t1\t11\n23\t12\t20\n14\t1\t20\n18\t9\t21\n16\t172366\t17\n8\t6\t5\n21\t99\t23\n22\t2\t18\n19\t3\t23\n1\t14\t23\n11\t25\t9\n22\t1\t17\n12\t24\t15\n17\t2\t9\n20\t10\t23\n0\t1\t9\n4\t152\t3\n21\t28\t19\n22\t184\t0\n21\t163780\t22\n6\t66867\t7\n15\t1986\t17\n7\t5\t12\n2\t241\t1\n15\t29\t18\n8\t2\t11\n7\t1\t11\n8\t503499\t8\n13\t2\t18\n14\t1\t19\n2\t60\t4\n14\t190\t0\n20\t4\t18\n18\t4\t22\n21\t455\t20\n12\t438\t14\n0\t3\t15\n18\t1\t5\n9\t577\t11\n4\t37\t6\n21\t135\t0\n18\t4\t15\n19\t5\t14\n16\t2566\t18\n6\t2\t3\n17\t1\t23\n12\t153\t0\n21\t613285\t21\n9\t400\t8\n8\t517\t7\n12\t555132\t12\n11\t293\t13\n12\t2\t8\n17\t1\t12\n13\t14\t11\n11\t4\t22\n7\t3\t5\n5\t5\t10\n13\t20\t16\n15\t1\t20\n6\t1\t2\n0\t1\t11\n10\t448\t9\n20\t1\t8\n3\t1\t9\n18\t130\t0\n15\t18\t13\n23\t5\t14\n0\t76280\t1\n2\t98\t0\n11\t134\t0\n11\t513053\t11\n11\t24\t14\n21\t3\t1\n3\t1\t21\n17\t1\t4\n0\t4\t19\n18\t718026\t18\n19\t528\t18\n5\t7\t8\n1\t1\t17\n16\t26\t14\n21\t1\t17\n14\t2\t9\n20\t99\t0\n19\t1\t16\n11\t1\t17\n18\t600\t17\n6\t2\t10\n17\t623867\t17\n13\t208\t0\n17\t4\t21\n12\t2\t9\n7\t120330\t8\n16\t26\t19\n5\t1\t15\n23\t371\t22\n22\t427\t21\n21\t2\t18\n5\t93\t0\n2\t1\t23\n19\t172731\t20\n0\t2\t8\n3\t144\t2\n5\t2\t2\n17\t2\t22\n13\t165955\t14\n19\t231\t21\n11\t9\t15\n10\t361\t12\n12\t1\t18\n8\t161\t0\n9\t105\t0\n5\t3\t3\n16\t2\t10\n14\t13\t18\n9\t3\t14\n17\t23\t20\n9\t509138\t9\n14\t21\t12\n0\t83\t2\n7\t396887\t7\n10\t145144\t11\n23\t82\t1\n3\t30116\t4\n4\t10\t2\n17\t18\t15\n7\t14\t10\n19\t6\t15\n15\t1\t21\n4\t109595\t4\n13\t412\t12\n12\t353\t11\n10\t497003\t10\n21\t1\t9\n20\t156866\t21\n6\t230420\t6\n12\t159069\t13\n8\t7\t6\n10\t2\t14\n15\t8\t19\n0\t2\t3\n10\t1\t7\n20\t2\t17\n13\t5\t17\n3\t45\t0\n12\t14\t10\n20\t4\t6\n13\t1\t19\n12\t4\t16\n10\t100\t0\n9\t2\t6\n4\t3\t1\n6\t11\t9\n3\t2\t7\n19\t106\t0\n13\t553683\t13\n0\t7\t4\n18\t206403\t19\n20\t391\t19\n17\t608\t16\n15\t180993\t16\n4\t5\t8\n2\t2\t7\n11\t155637\t12\n17\t183\t0\n4\t20741\t5\n0\t1\t12\n16\t9\t20\n22\t1\t4\n16\t3\t13\n14\t6\t10\n0\t2\t21\n20\t621150\t20\n5\t102888\t5\n15\t204\t0\n14\t14\t17\n7\t139\t0\n7\t796\t6\n16\t1\t22\n22\t24\t20\n16\t2\t12\n11\t488\t10\n22\t4\t3\n22\t3\t1\n2\t1\t16\n0\t299\t23\n6\t7\t4\n10\t19\t8\n2\t5\t6\n"
           }
         ]
+      },
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "SPARK JOB",
+          "tooltip": "View in Spark web UI",
+          "group": "spark",
+          "values": [
+            "http://10.52.0.231:4040/jobs/job?id\u003d354",
+            "http://10.52.0.231:4040/jobs/job?id\u003d355",
+            "http://10.52.0.231:4040/jobs/job?id\u003d356",
+            "http://10.52.0.231:4040/jobs/job?id\u003d357",
+            "http://10.52.0.231:4040/jobs/job?id\u003d358"
+          ],
+          "interpreterSettingId": "spark"
+        }
       },
       "apps": [],
       "jobName": "paragraph_1542841596937_1366823867",
       "id": "20150210-015302_1492795503",
       "dateCreated": "2018-11-21 23:06:36.937",
-      "dateStarted": "2018-12-01 21:30:02.580",
-      "dateFinished": "2018-12-01 22:35:09.403",
+      "dateStarted": "2018-12-02 22:46:41.544",
+      "dateFinished": "2018-12-02 22:46:46.759",
       "status": "FINISHED",
       "progressUpdateIntervalMs": 500
     },
@@ -402,7 +488,7 @@
       "title": "Average Fare paid by Borough",
       "text": "%spark.sql\nSELECT zone_data.Borough as Borough,\navg(fare_amount) as fare\nFROM taxi_data, zone_data\nWHERE PULocationID \u003d LocationID\nGROUP BY Borough",
       "user": "admin",
-      "dateUpdated": "2018-12-02 21:54:50.806",
+      "dateUpdated": "2018-12-02 22:47:07.011",
       "config": {
         "colWidth": 4.0,
         "fontSize": 9.0,
@@ -476,7 +562,8 @@
         },
         "editorMode": "ace/mode/sql",
         "editorHide": true,
-        "title": true
+        "title": true,
+        "tableHide": false
       },
       "settings": {
         "params": {},
@@ -498,12 +585,12 @@
           "tooltip": "View in Spark web UI",
           "group": "spark",
           "values": [
-            "http://10.52.0.231:4040/jobs/job?id\u003d27",
-            "http://10.52.0.231:4040/jobs/job?id\u003d28",
-            "http://10.52.0.231:4040/jobs/job?id\u003d29",
-            "http://10.52.0.231:4040/jobs/job?id\u003d30",
-            "http://10.52.0.231:4040/jobs/job?id\u003d31",
-            "http://10.52.0.231:4040/jobs/job?id\u003d32"
+            "http://10.52.0.231:4040/jobs/job?id\u003d359",
+            "http://10.52.0.231:4040/jobs/job?id\u003d360",
+            "http://10.52.0.231:4040/jobs/job?id\u003d361",
+            "http://10.52.0.231:4040/jobs/job?id\u003d362",
+            "http://10.52.0.231:4040/jobs/job?id\u003d363",
+            "http://10.52.0.231:4040/jobs/job?id\u003d364"
           ],
           "interpreterSettingId": "spark"
         }
@@ -512,8 +599,8 @@
       "jobName": "paragraph_1543696588950_-1610114080",
       "id": "20181201-203628_1595780921",
       "dateCreated": "2018-12-01 20:36:28.950",
-      "dateStarted": "2018-12-02 19:15:34.837",
-      "dateFinished": "2018-12-02 19:15:37.374",
+      "dateStarted": "2018-12-02 22:46:46.869",
+      "dateFinished": "2018-12-02 22:46:48.318",
       "status": "FINISHED",
       "progressUpdateIntervalMs": 500
     },
@@ -521,7 +608,7 @@
       "title": "Pickups by Day of Week",
       "text": "%spark.sql\nSELECT date_format(tpep_pickup_datetime, \u0027EEEE\u0027) as day_of_week, count(*)\nFROM taxi_data\ngroup by day_of_week\nORDER BY day_of_week",
       "user": "admin",
-      "dateUpdated": "2018-12-02 21:18:39.399",
+      "dateUpdated": "2018-12-02 22:46:48.368",
       "config": {
         "colWidth": 4.0,
         "fontSize": 9.0,
@@ -623,7 +710,9 @@
           "completionSupport": true
         },
         "editorMode": "ace/mode/sql",
-        "title": true
+        "title": true,
+        "editorHide": true,
+        "tableHide": false
       },
       "settings": {
         "params": {},
@@ -645,7 +734,7 @@
           "tooltip": "View in Spark web UI",
           "group": "spark",
           "values": [
-            "http://10.52.0.231:4040/jobs/job?id\u003d56"
+            "http://10.52.0.231:4040/jobs/job?id\u003d365"
           ],
           "interpreterSettingId": "spark"
         }
@@ -654,8 +743,8 @@
       "jobName": "paragraph_1543785119443_1338052500",
       "id": "20181202-211159_1512973518",
       "dateCreated": "2018-12-02 21:11:59.443",
-      "dateStarted": "2018-12-02 21:17:04.758",
-      "dateFinished": "2018-12-02 21:17:09.089",
+      "dateStarted": "2018-12-02 22:46:48.389",
+      "dateFinished": "2018-12-02 22:46:52.680",
       "status": "FINISHED",
       "progressUpdateIntervalMs": 500
     },
@@ -663,7 +752,7 @@
       "title": "Pickups vs Dropoffs per Hour",
       "text": "%spark.sql\n\nSELECT *\nFROM pickups, dropoffs\nWHERE pickup_time \u003d dropoff_time\n",
       "user": "admin",
-      "dateUpdated": "2018-12-02 21:54:51.209",
+      "dateUpdated": "2018-12-02 22:47:07.033",
       "config": {
         "colWidth": 4.0,
         "fontSize": 9.0,
@@ -736,7 +825,8 @@
         },
         "editorMode": "ace/mode/sql",
         "editorHide": true,
-        "title": true
+        "title": true,
+        "tableHide": false
       },
       "settings": {
         "params": {},
@@ -758,11 +848,11 @@
           "tooltip": "View in Spark web UI",
           "group": "spark",
           "values": [
-            "http://10.52.0.231:4040/jobs/job?id\u003d41",
-            "http://10.52.0.231:4040/jobs/job?id\u003d42",
-            "http://10.52.0.231:4040/jobs/job?id\u003d43",
-            "http://10.52.0.231:4040/jobs/job?id\u003d44",
-            "http://10.52.0.231:4040/jobs/job?id\u003d45"
+            "http://10.52.0.231:4040/jobs/job?id\u003d366",
+            "http://10.52.0.231:4040/jobs/job?id\u003d367",
+            "http://10.52.0.231:4040/jobs/job?id\u003d368",
+            "http://10.52.0.231:4040/jobs/job?id\u003d369",
+            "http://10.52.0.231:4040/jobs/job?id\u003d370"
           ],
           "interpreterSettingId": "spark"
         }
@@ -771,8 +861,8 @@
       "jobName": "paragraph_1543781933022_-528712467",
       "id": "20181202-201853_1715425517",
       "dateCreated": "2018-12-02 20:18:53.022",
-      "dateStarted": "2018-12-02 21:02:15.340",
-      "dateFinished": "2018-12-02 21:02:23.325",
+      "dateStarted": "2018-12-02 22:46:52.718",
+      "dateFinished": "2018-12-02 22:46:59.208",
       "status": "FINISHED",
       "progressUpdateIntervalMs": 500
     },
@@ -780,7 +870,7 @@
       "title": "Trips per Day of Month",
       "text": "%spark.sql\nSELECT DAYOFMONTH(tpep_pickup_datetime) as day, count(*)\nFROM taxi_data\nGROUP BY day",
       "user": "admin",
-      "dateUpdated": "2018-12-02 21:54:51.441",
+      "dateUpdated": "2018-12-02 22:47:07.053",
       "config": {
         "colWidth": 4.0,
         "fontSize": 9.0,
@@ -844,8 +934,9 @@
           "completionSupport": true
         },
         "editorMode": "ace/mode/sql",
-        "editorHide": false,
-        "title": true
+        "editorHide": true,
+        "title": true,
+        "tableHide": false
       },
       "settings": {
         "params": {},
@@ -867,11 +958,11 @@
           "tooltip": "View in Spark web UI",
           "group": "spark",
           "values": [
-            "http://10.52.0.231:4040/jobs/job?id\u003d68",
-            "http://10.52.0.231:4040/jobs/job?id\u003d69",
-            "http://10.52.0.231:4040/jobs/job?id\u003d70",
-            "http://10.52.0.231:4040/jobs/job?id\u003d71",
-            "http://10.52.0.231:4040/jobs/job?id\u003d72"
+            "http://10.52.0.231:4040/jobs/job?id\u003d371",
+            "http://10.52.0.231:4040/jobs/job?id\u003d372",
+            "http://10.52.0.231:4040/jobs/job?id\u003d373",
+            "http://10.52.0.231:4040/jobs/job?id\u003d374",
+            "http://10.52.0.231:4040/jobs/job?id\u003d375"
           ],
           "interpreterSettingId": "spark"
         }
@@ -880,16 +971,16 @@
       "jobName": "paragraph_1543784901474_1263709239",
       "id": "20181202-210821_820390393",
       "dateCreated": "2018-12-02 21:08:21.474",
-      "dateStarted": "2018-12-02 21:53:06.352",
-      "dateFinished": "2018-12-02 21:53:10.450",
+      "dateStarted": "2018-12-02 22:46:59.264",
+      "dateFinished": "2018-12-02 22:47:02.483",
       "status": "FINISHED",
       "progressUpdateIntervalMs": 500
     },
     {
       "title": "Transactions per Payment Type",
-      "text": "%spark.sql\nSELECT payment_type \nAS payment_type, sum(payment_type) \nFROM taxi_data \nGROUP BY payment_type",
+      "text": "%spark.sql\nSELECT payment_data.payment_name AS payment, \nsum(taxi_data.payment_type) \nFROM taxi_data, payment_data\nWHERE taxi_data.payment_type \u003d payment_data.id\nGROUP BY payment",
       "user": "admin",
-      "dateUpdated": "2018-12-02 21:58:26.356",
+      "dateUpdated": "2018-12-02 22:47:07.074",
       "config": {
         "colWidth": 4.0,
         "fontSize": 9.0,
@@ -897,15 +988,50 @@
         "results": {
           "0": {
             "graph": {
-              "mode": "table",
+              "mode": "multiBarChart",
               "height": 300.0,
-              "optionOpen": true,
+              "optionOpen": false,
               "setting": {
                 "table": {
-                  "tableGridState": {},
+                  "tableGridState": {
+                    "columns": [
+                      {
+                        "name": "payment_type",
+                        "visible": true,
+                        "width": "*",
+                        "sort": {},
+                        "filters": [
+                          {}
+                        ],
+                        "pinned": ""
+                      },
+                      {
+                        "name": "sum(payment_type)",
+                        "visible": true,
+                        "width": "*",
+                        "sort": {},
+                        "filters": [
+                          {}
+                        ],
+                        "pinned": ""
+                      }
+                    ],
+                    "scrollFocus": {},
+                    "selection": [],
+                    "grouping": {
+                      "grouping": [],
+                      "aggregations": [],
+                      "rowExpandedStates": {}
+                    },
+                    "treeView": {},
+                    "pagination": {
+                      "paginationCurrentPage": 1.0,
+                      "paginationPageSize": 250.0
+                    }
+                  },
                   "tableColumnTypeState": {
                     "names": {
-                      "payment_type": "string",
+                      "payment": "string",
                       "sum(payment_type)": "string"
                     },
                     "updated": false
@@ -929,7 +1055,7 @@
               "commonSetting": {},
               "keys": [
                 {
-                  "name": "payment_type",
+                  "name": "payment",
                   "index": 0.0,
                   "aggr": "sum"
                 }
@@ -953,7 +1079,10 @@
           "completionSupport": true
         },
         "editorMode": "ace/mode/sql",
-        "title": true
+        "title": true,
+        "lineNumbers": true,
+        "editorHide": true,
+        "tableHide": false
       },
       "settings": {
         "params": {},
@@ -964,7 +1093,7 @@
         "msg": [
           {
             "type": "TABLE",
-            "data": "payment_type\tsum(payment_type)\n1\t6105871\n3\t129612\n4\t47408\n2\t5197894\n"
+            "data": "payment\tsum(payment_type)\nCredit Card\t6105871\nCash\t5197894\nDispute\t47408\nNo charge\t129612\n"
           }
         ]
       },
@@ -975,11 +1104,11 @@
           "tooltip": "View in Spark web UI",
           "group": "spark",
           "values": [
-            "http://10.52.0.231:4040/jobs/job?id\u003d57",
-            "http://10.52.0.231:4040/jobs/job?id\u003d58",
-            "http://10.52.0.231:4040/jobs/job?id\u003d59",
-            "http://10.52.0.231:4040/jobs/job?id\u003d60",
-            "http://10.52.0.231:4040/jobs/job?id\u003d61"
+            "http://10.52.0.231:4040/jobs/job?id\u003d376",
+            "http://10.52.0.231:4040/jobs/job?id\u003d377",
+            "http://10.52.0.231:4040/jobs/job?id\u003d378",
+            "http://10.52.0.231:4040/jobs/job?id\u003d379",
+            "http://10.52.0.231:4040/jobs/job?id\u003d380"
           ],
           "interpreterSettingId": "spark"
         }
@@ -988,8 +1117,8 @@
       "jobName": "paragraph_1543785378069_461820220",
       "id": "20181202-211618_1587396564",
       "dateCreated": "2018-12-02 21:16:18.069",
-      "dateStarted": "2018-12-02 21:50:08.508",
-      "dateFinished": "2018-12-02 21:50:10.471",
+      "dateStarted": "2018-12-02 22:47:02.604",
+      "dateFinished": "2018-12-02 22:47:03.970",
       "status": "FINISHED",
       "progressUpdateIntervalMs": 500
     },
@@ -997,7 +1126,7 @@
       "title": "Average Toll paid by Borough",
       "text": "%spark.sql\nSELECT Borough, avg(tolls_amount) \nFROM taxi_data t, zone_data z\nWHERE t.PULocationID \u003d z.LocationID \nGROUP BY Borough",
       "user": "admin",
-      "dateUpdated": "2018-12-02 21:58:15.818",
+      "dateUpdated": "2018-12-02 22:47:07.096",
       "config": {
         "colWidth": 4.0,
         "fontSize": 9.0,
@@ -1062,7 +1191,9 @@
           "completionSupport": true
         },
         "editorMode": "ace/mode/sql",
-        "title": true
+        "title": true,
+        "editorHide": true,
+        "tableHide": false
       },
       "settings": {
         "params": {},
@@ -1084,12 +1215,12 @@
           "tooltip": "View in Spark web UI",
           "group": "spark",
           "values": [
-            "http://10.52.0.231:4040/jobs/job?id\u003d62",
-            "http://10.52.0.231:4040/jobs/job?id\u003d63",
-            "http://10.52.0.231:4040/jobs/job?id\u003d64",
-            "http://10.52.0.231:4040/jobs/job?id\u003d65",
-            "http://10.52.0.231:4040/jobs/job?id\u003d66",
-            "http://10.52.0.231:4040/jobs/job?id\u003d67"
+            "http://10.52.0.231:4040/jobs/job?id\u003d381",
+            "http://10.52.0.231:4040/jobs/job?id\u003d382",
+            "http://10.52.0.231:4040/jobs/job?id\u003d383",
+            "http://10.52.0.231:4040/jobs/job?id\u003d384",
+            "http://10.52.0.231:4040/jobs/job?id\u003d385",
+            "http://10.52.0.231:4040/jobs/job?id\u003d386"
           ],
           "interpreterSettingId": "spark"
         }
@@ -1098,8 +1229,8 @@
       "jobName": "paragraph_1543787389086_842295142",
       "id": "20181202-214949_279927059",
       "dateCreated": "2018-12-02 21:49:49.086",
-      "dateStarted": "2018-12-02 21:52:35.145",
-      "dateFinished": "2018-12-02 21:52:40.050",
+      "dateStarted": "2018-12-02 22:47:04.028",
+      "dateFinished": "2018-12-02 22:47:05.448",
       "status": "FINISHED",
       "progressUpdateIntervalMs": 500
     },
@@ -1107,7 +1238,7 @@
       "title": "Average Tip Paid by Borough",
       "text": "%spark.sql\nSELECT Borough, avg(tip_amount) \nFROM taxi_data t, zone_data z \nWHERE t.PULocationID \u003d z.LocationID \nGROUP BY Borough",
       "user": "admin",
-      "dateUpdated": "2018-12-02 21:58:26.138",
+      "dateUpdated": "2018-12-02 22:47:07.599",
       "config": {
         "colWidth": 4.0,
         "fontSize": 9.0,
@@ -1115,7 +1246,7 @@
         "results": {
           "0": {
             "graph": {
-              "mode": "table",
+              "mode": "multiBarChart",
               "height": 300.0,
               "optionOpen": false,
               "setting": {
@@ -1136,10 +1267,32 @@
                   },
                   "updated": false,
                   "initialized": false
+                },
+                "multiBarChart": {
+                  "rotate": {
+                    "degree": "-45"
+                  },
+                  "xLabelStatus": "default"
                 }
               },
-              "commonSetting": {}
-            }
+              "commonSetting": {},
+              "keys": [
+                {
+                  "name": "Borough",
+                  "index": 0.0,
+                  "aggr": "sum"
+                }
+              ],
+              "groups": [],
+              "values": [
+                {
+                  "name": "avg(tip_amount)",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              ]
+            },
+            "helium": {}
           }
         },
         "editorSetting": {
@@ -1149,7 +1302,9 @@
           "completionSupport": true
         },
         "editorMode": "ace/mode/sql",
-        "title": true
+        "title": true,
+        "editorHide": true,
+        "tableHide": false
       },
       "settings": {
         "params": {},
@@ -1171,12 +1326,12 @@
           "tooltip": "View in Spark web UI",
           "group": "spark",
           "values": [
-            "http://10.52.0.231:4040/jobs/job?id\u003d73",
-            "http://10.52.0.231:4040/jobs/job?id\u003d74",
-            "http://10.52.0.231:4040/jobs/job?id\u003d75",
-            "http://10.52.0.231:4040/jobs/job?id\u003d76",
-            "http://10.52.0.231:4040/jobs/job?id\u003d77",
-            "http://10.52.0.231:4040/jobs/job?id\u003d78"
+            "http://10.52.0.231:4040/jobs/job?id\u003d387",
+            "http://10.52.0.231:4040/jobs/job?id\u003d388",
+            "http://10.52.0.231:4040/jobs/job?id\u003d389",
+            "http://10.52.0.231:4040/jobs/job?id\u003d390",
+            "http://10.52.0.231:4040/jobs/job?id\u003d391",
+            "http://10.52.0.231:4040/jobs/job?id\u003d392"
           ],
           "interpreterSettingId": "spark"
         }
@@ -1185,36 +1340,24 @@
       "jobName": "paragraph_1543787555116_1140261586",
       "id": "20181202-215235_2012836299",
       "dateCreated": "2018-12-02 21:52:35.116",
-      "dateStarted": "2018-12-02 21:56:03.377",
-      "dateFinished": "2018-12-02 21:56:05.211",
+      "dateStarted": "2018-12-02 22:47:05.556",
+      "dateFinished": "2018-12-02 22:47:06.949",
       "status": "FINISHED",
       "progressUpdateIntervalMs": 500
     },
     {
       "text": "%spark.sql\n",
       "user": "admin",
-      "dateUpdated": "2018-12-02 21:58:35.316",
-      "config": {
-        "colWidth": 4.0,
-        "fontSize": 9.0,
-        "enabled": true,
-        "results": {},
-        "editorSetting": {
-          "language": "sql",
-          "editOnDblClick": false,
-          "completionKey": "TAB",
-          "completionSupport": true
-        },
-        "editorMode": "ace/mode/sql"
-      },
+      "dateUpdated": "2018-12-02 22:47:05.532",
+      "config": {},
       "settings": {
         "params": {},
         "forms": {}
       },
       "apps": [],
-      "jobName": "paragraph_1543787763354_580645556",
-      "id": "20181202-215603_1108954428",
-      "dateCreated": "2018-12-02 21:56:03.354",
+      "jobName": "paragraph_1543790825531_-1331899029",
+      "id": "20181202-224705_115962515",
+      "dateCreated": "2018-12-02 22:47:05.531",
       "status": "READY",
       "progressUpdateIntervalMs": 500
     }
